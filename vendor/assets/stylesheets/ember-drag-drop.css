@@ -1,0 +1,5 @@
+/* Needed for browser compatiblity */
+
+.draggable-object {
+  padding-bottom: 2px;
+}
