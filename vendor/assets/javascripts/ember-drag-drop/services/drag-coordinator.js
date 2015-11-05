@@ -1,4 +1,4 @@
-Sketchdrive.DragCoordinatorService = EmberDragDrop.DragCoordinatorService.extend({
+EmberDragDrop.DragCoordinatorService = Ember.Service.extend({
   arrayList: null,
   currentDragObject: null,
   currentDragEvent: null,
