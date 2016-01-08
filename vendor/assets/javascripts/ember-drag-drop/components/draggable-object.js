@@ -20,7 +20,7 @@ EmberDragDrop.DraggableObjectComponent = Ember.Component.extend({
     }
   }),
   didInsertElement: function() {
-    let self = this;
+    var self = this;
     //if there is a drag handle watch the mouse up and down events to trigger if drag is allowed
     if (this.get('dragHandle')) {
       //only start when drag handle is activated
