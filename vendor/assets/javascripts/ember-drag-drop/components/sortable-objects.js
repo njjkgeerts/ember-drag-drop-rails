@@ -15,7 +15,9 @@ EmberDragDrop.SortableObjectsComponent = Ember.Component.extend( {
     return false;
   },
   drop: function() {
-    this.set('sortableObjectList', this.get('dragCoordinator').getChangedArray());
-    this.sendAction('sortEndAction');
+    if (this.get('enableSort')) {
+      this.set('sortableObjectList', this.get('dragCoordinator').getChangedArray());
+      this.sendAction('sortEndAction');
+    }
   }
 });

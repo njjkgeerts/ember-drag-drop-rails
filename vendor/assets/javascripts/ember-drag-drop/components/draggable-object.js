@@ -3,8 +3,9 @@ EmberDragDrop.DraggableObjectComponent = Ember.Component.extend({
   tagName: "div",
   overrideClass: 'draggable-object',
   classNameBindings: [':js-draggableObject','isDraggingObject:is-dragging-object:', 'overrideClass'],
-  attributeBindings: ['draggable'],
+  attributeBindings: ['dragReady:draggable'],
   isDraggable: true,
+  dragReady: true,  
   isSortable: false,
   title: Ember.computed.alias('content.title'),
 
@@ -18,9 +19,30 @@ EmberDragDrop.DraggableObjectComponent = Ember.Component.extend({
       return null;
     }
   }),
-
+  didInsertElement: function() {
+    let self = this;
+    //if there is a drag handle watch the mouse up and down events to trigger if drag is allowed
+    if (this.get('dragHandle')) {
+      //only start when drag handle is activated
+      if (this.$(this.get('dragHandle'))) {
+        this.set('dragReady', false);
+        this.$(this.get('dragHandle')).on('mouseover', function(){
+          self.set('dragReady', true);
+        });
+        this.$(this.get('dragHandle')).on('mouseout', function(){
+          self.set('dragReady', false);
+        });
+      }
+    }
+  },
+  willDestroyElement: function(){
+    if (this.$(this.get('dragHandle'))) {
+      this.$(this.get('dragHandle')).off();
+    }
+  },
+  
   dragStart: function(event) {
-    if (!this.get('isDraggable')) {
+    if (!this.get('isDraggable') || !this.get('dragReady')) {
       event.preventDefault();
       return;
     }
@@ -28,8 +50,12 @@ EmberDragDrop.DraggableObjectComponent = Ember.Component.extend({
     var dataTransfer = event.dataTransfer;
 
     var obj = this.get('content');
-    var id = this.get('coordinator').setObject(obj, { source: this });
-
+    var id = null;
+    if (this.get('coordinator')) {
+       id = this.get('coordinator').setObject(obj, { source: this });
+    }
+    
+    
     dataTransfer.setData('Text', id);
 
     if (obj) {
@@ -56,6 +82,9 @@ EmberDragDrop.DraggableObjectComponent = Ember.Component.extend({
     this.set('isDraggingObject', false);
     this.get('dragCoordinator').dragEnded(event);
     this.sendAction('dragEndAction', obj);
+    if (this.get('dragHandle')) {
+      this.set('dragReady', false);
+    }
   },
 
   dragOver: function(event) {

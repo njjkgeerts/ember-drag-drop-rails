@@ -39,7 +39,6 @@ EmberDragDrop.DragCoordinatorService = Ember.Service.extend({
       (pos.py > 0.33 && event.originalEvent.clientY != lastEvent.originalEvent.clientY))) {
       isMoving = true;
     }
-
     return isMoving;
   },
   insertElementOver: function(currentDragItem, overElement) {
